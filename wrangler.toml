@@ -1,0 +1,40 @@
+name = "rannz-unlock"
+main = "worker/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ─────────────────────────────────────────────
+# D1 DATABASE BINDING
+# Replace "database_id" with the ID returned by:
+#   wrangler d1 create rannz-unlock-db
+# ─────────────────────────────────────────────
+[[d1_databases]]
+binding = "DB"
+database_name = "rannz-unlock-db"
+database_id = "4c34c004-e2fc-4d91-97f9-1b1968acb379"
+
+# ─────────────────────────────────────────────
+# STATIC ASSETS (Workers Assets — serves /public as the frontend)
+# This lets a single Worker serve both the site and the API,
+# so you can deploy with just `wrangler deploy` (no separate
+# Pages project required). See README for the Pages-based
+# alternative if you prefer split hosting.
+# ─────────────────────────────────────────────
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# ─────────────────────────────────────────────
+# SECRETS (set with `wrangler secret put <NAME>`, never in this file)
+#   SESSION_SECRET   -> random 32+ byte string, used to sign session tokens
+#   PASSWORD_PEPPER   -> random string mixed into password hashing
+# ─────────────────────────────────────────────
+
+[vars]
+# Non-secret runtime config. Safe to keep in source control.
+ENVIRONMENT = "production"
+RESOLVER_TIMEOUT_MS = "10000"
+RESOLVER_MAX_BYTES = "104857600" # 100 MB
+RATE_LIMIT_WINDOW_SECONDS = "60"
+RATE_LIMIT_MAX_REQUESTS = "20"
