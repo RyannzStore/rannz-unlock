@@ -25,13 +25,18 @@ export default {
 
       // Not an API route — let the Assets binding serve the frontend.
       return env.ASSETS.fetch(request);
-    } catch (err) {
-      // Never leak stack traces or internals to the client.
       console.error("Unhandled error:", err);
-      return errorResponse("Internal server error.", 500);
-    }
-  },
-};
+  return errorResponse("Internal server error.", 500);
+}} catch (err) {
+      // Never leak stack traces or internals to the client.
+} catch (err) {
+  console.error("Unhandled error:", err);
+  return errorResponse(
+    "Internal server error.",
+    500,
+    { debug: err?.message || String(err) }
+  );
+}
 
 async function routeApi(request, env, pathname) {
   const method = request.method;
