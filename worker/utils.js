@@ -54,7 +54,7 @@ export async function sha256Hex(text) {
 // ── Password hashing (PBKDF2-SHA256 via Web Crypto — no native
 // bcrypt is available in the Workers runtime, so PBKDF2 with a
 // high iteration count is the standard alternative). ──
-const PBKDF2_ITERATIONS = 150000;
+const PBKDF2_ITERATIONS = 100000;
 
 export async function hashPassword(password, pepper) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
