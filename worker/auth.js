@@ -66,9 +66,21 @@ export async function handleRegister(request, env) {
     return errorResponse("Username or email is already registered.", 409);
   }
 
-  const passwordHash = await hashPassword(password, env.PASSWORD_PEPPER || "");
-  const userId = newId();
+let passwordHash;
 
+try {
+  passwordHash = await hashPassword(
+    password,
+    env.PASSWORD_PEPPER || ""
+  );
+} catch (err) {
+  console.error("HASH ERROR:", err);
+  return errorResponse(
+    "Password hashing failed.",
+    500,
+    { debug: err?.message || String(err) }
+  );
+}
   await env.DB.prepare(
     "INSERT INTO users (id, username, email, password_hash) VALUES (?, ?, ?, ?)"
   )
